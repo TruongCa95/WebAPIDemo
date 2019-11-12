@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register(Users users)
+        public async Task<IActionResult> Register([FromBody]Users users)
         {
             try
             {
