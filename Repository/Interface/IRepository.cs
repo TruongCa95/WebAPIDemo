@@ -7,7 +7,7 @@ namespace Repositories.Interface
     {
         IEnumerable<T> GetAll();
 
-        Task<T> GetById(string id);
+        Task<T> GetById(int id);
 
         void Add(T entity);
 

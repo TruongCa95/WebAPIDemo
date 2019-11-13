@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,25 +10,27 @@ using Data.Helper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.Implement;
+using Repositories.Interface;
 
 namespace Services
 {
    public class UserService : IUserService
    {
-       private readonly UnitOfWork _unitOfWork;
+       private readonly IUnitOfWork _unitOfWork;
        private readonly Appsetting _appsetting;
-
-       public UserService(UnitOfWork unitOfWork, IOptions<Appsetting> appsetting)
+       private APIDataContext _dbContext; 
+       public UserService(APIDataContext dbContext , IUnitOfWork unitOfWork, IOptions<Appsetting> appsetting)
        {
            _unitOfWork = unitOfWork;
            _appsetting = appsetting.Value;
+           _dbContext = dbContext;
        }
         public bool IsUserExits(string name)
         {
             return _unitOfWork.UserRepository.CheckExitMember(name);
         }
 
-        public async Task<Users> GetListUser(string id)
+        public async Task<Users> GetListUser(int id)
         {
             var userList = await _unitOfWork.UserRepository.GetById(id);
             userList.Password = null;
@@ -41,7 +44,11 @@ namespace Services
            return users;
         }
 
-        public async Task UpdateUserAsync(Users users)
+        public IList<Users> GetUsers()
+        {
+            return _dbContext.Users.ToList();
+        }
+        public async Task<Users> UpdateUserAsync(Users users)
         {
             var currentUser = await _unitOfWork.UserRepository.FindMemberByEmailAndPassword(users.Email, users.Password);
             currentUser.UserName = users.UserName;
@@ -49,7 +56,8 @@ namespace Services
             currentUser.Gender = users.Gender;
             currentUser.DateOfBirth = users.DateOfBirth;
             currentUser.EmailOptIn = users.EmailOptIn;
-            await _unitOfWork.SaveChanges().ConfigureAwait(false);
+            await _unitOfWork.SaveChanges();
+            return currentUser;
 
         }
 

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(APIDataContext))]
-    [Migration("20191112102241_API")]
-    partial class API
+    [Migration("20191113040313_APIDemo")]
+    partial class APIDemo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,8 +23,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Users", b =>
                 {
-                    b.Property<string>("UserId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("DateOfBirth");
 
@@ -48,7 +49,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(200)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("id");
 
                     b.ToTable("Users");
                 });

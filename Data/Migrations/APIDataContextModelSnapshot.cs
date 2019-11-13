@@ -21,8 +21,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Users", b =>
                 {
-                    b.Property<string>("UserId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("DateOfBirth");
 
@@ -46,7 +47,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(200)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("id");
 
                     b.ToTable("Users");
                 });

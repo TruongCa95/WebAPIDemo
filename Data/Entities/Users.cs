@@ -11,7 +11,7 @@ namespace Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string UserId { get; set; }
+        public int id { get; set; }
 
         [Required(ErrorMessage = "Name is not empty")]
         [Column(TypeName = "nvarchar(200)")]

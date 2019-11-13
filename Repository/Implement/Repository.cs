@@ -20,7 +20,7 @@ namespace Repositories.Implement
             return _dbContext.Set<T>().ToList();
         }
 
-        public async Task<T> GetById(string id)
+        public async Task<T> GetById(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
