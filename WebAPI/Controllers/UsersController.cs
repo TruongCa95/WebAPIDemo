@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -24,28 +25,47 @@ namespace WebAPI.Controllers
 
         //POST api/users/register
         [HttpPost]
+        [EnableCors]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody]Users users)
+        public async Task<Users> Register(Users users)
         {
             try
             {
                 var UserExits = _userService.IsUserExits(users.UserName);
-                if (UserExits)
-                {
-                    return BadRequest(new {Message = "User Name is exits!"});
-                }
-
+                if (UserExits) return null;
                 var result = await _userService.AddUserAsync(users);
-                return Ok(result);
+                return result;
             }
             catch (Exception e)
             {
-                return Ok(e);
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        //POST api/users/delete
+        [HttpDelete]
+        [EnableCors]
+        [AllowAnonymous]
+        [Route("delete")]
+        public async Task<Users> Delete(Users users)
+        {
+            try
+            {
+                var UserExits = _userService.IsUserExits(users.UserName);
+                if (!UserExits) return null;
+                var result = await _userService.DeleteUserAsync(users);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
         // PUT api/users/edit
         [Authorize]
+        [EnableCors]
         [HttpPut("edit")]
         public async Task<IActionResult> Update(Users user)
         {
@@ -66,19 +86,17 @@ namespace WebAPI.Controllers
         }
         // POST api/users/login
         [AllowAnonymous]
+        [EnableCors]
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate(Login login)
+        public async Task<Users> Authenticate(Login login)
         {
             var user = await _userService.UserAuthentication(login.Email, login.Password);
-
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(user);
+            return user;
         }
         //GET api/Users/id
         [HttpGet("{id}")]
         [Authorize]
+        [EnableCors]
         public async Task<ActionResult<Users>> GetUserById(int id)
         {
             var currentUser = await _userService.GetListUser(id);
@@ -87,6 +105,7 @@ namespace WebAPI.Controllers
 
         //GET api/Users/all
         [HttpGet("all")]
+        [EnableCors]
         public ActionResult GetList()
         {
             return Ok(_userService.GetUsers());
