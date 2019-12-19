@@ -82,5 +82,14 @@ namespace Services
             user.Password = null;
             return user;
         }
+
+        public async Task<Users> DeleteUserAsync(Users users)
+        {
+            var currentUser = await _unitOfWork.UserRepository.FindMemberByEmailAndPassword(users.Email, users.Password);
+            _unitOfWork.UserRepository.Delete(currentUser);
+            await _unitOfWork.SaveChanges();
+            return users;
+
+        }
     }
 }

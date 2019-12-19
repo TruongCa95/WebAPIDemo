@@ -13,6 +13,7 @@ namespace Services
        Task<Users> GetListUser(int id);
        Task<Users> AddUserAsync(Users users);
        IList<Users> GetUsers();
+       Task<Users> DeleteUserAsync(Users users);
        Task<Users> UpdateUserAsync(Users users);
        Task<Users> UserAuthentication(string email, string password);
    }
